@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 def linear_plot(x, y, title=''):
     """
@@ -40,4 +41,31 @@ def plot_histograms(histograms = {}):
         ax.hist(data['values'], bins=30)
         ax.set_title(data['name'])
 
+    plt.show()
+
+def plot_similarity_heatmap(logits, image_labels, text_labels):
+    """Plots a heatmap of image-text similarity logits.
+    Parameters:
+    logits (torch.Tensor): A tensor of shape (num_images, num_texts) containing
+                            the similarity logits between images and text descriptions.
+    image_labels (list): A list of labels for the images.
+    text_labels (list): A list of labels for the text descriptions.
+
+    Returns:
+    None
+    """
+    plt.figure(figsize=(6, 5))
+    sns.heatmap(
+        logits.cpu().numpy(),
+        annot=True,
+        fmt=".2f",
+        cmap="viridis",
+        xticklabels=text_labels,
+        yticklabels=image_labels,
+        cbar=True
+    )
+    plt.xlabel("Text Descriptions")
+    plt.ylabel("Images")
+    plt.title("Image–Text Similarity (Logits per Image)")
+    plt.tight_layout()
     plt.show()
