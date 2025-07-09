@@ -9,13 +9,11 @@ def trace_module_shapes(module, input_tensor):
         input_tensor (torch.Tensor): A sample input tensor to pass through the module.
 
     Returns:
-        List of tuples containing the class name, input shape, and output shape for each layer.
+        None
     '''
     print("=" * 90)
     print(f"{'Layer':<20} {'Trainable':<20} {'Input Shape':<30} {'Output Shape'}")
     print("-" * 90)
-
-    # shapes = []
 
     def forward_hook(mod, input, output):
         '''
@@ -35,7 +33,6 @@ def trace_module_shapes(module, input_tensor):
         is_trainable =  'True' if any(p.requires_grad for p in module.parameters()) else 'False'
 
         print(f"{class_name:<20} {is_trainable:<20} {str(input_shape):<30} {str(output_shape)}")
-        # shapes.append((class_name, input_shape, output_shape))
 
     hooks = []
     is_leaf = lambda m: len(list(m.children())) == 0
@@ -58,5 +55,3 @@ def trace_module_shapes(module, input_tensor):
     # Remove hooks
     for hook in hooks:
         hook.remove()
-
-    # return shapes
