@@ -1,19 +1,21 @@
 import matplotlib.pyplot as plt
+import seaborn as sns
+
 import numpy as np
 import io
 
-def plot_radar_chart(data, title="", color_palette = ['#BAE8E1', '#B0BFFE', '#FFDFFC', '#FF9EB3']):
+def plot_radar_chart(df, title="", color_palette = ['#BAE8E1', '#B0BFFE', '#FFDFFC', '#FF9EB3']):
     '''
     Plots a radar chart.
 
     Args:
-        - data (pd.DataFrame): A dataframe that its rows will be the radar circular points (metrics), and columns are the legends.
+        - df (pd.DataFrame): A dataframe that its rows will be the radar circular points (metrics), and columns are the legends.
 
     Returns:
         Plot figure.
     '''
     # Get the metrics (df rows)
-    metrics = data.index.tolist()
+    metrics = df.index.tolist()
 
     theta = np.linspace(0, 2 * np.pi, len(metrics), endpoint=False)
     theta = np.concatenate([theta, [theta[0]]])
@@ -39,7 +41,7 @@ def plot_radar_chart(data, title="", color_palette = ['#BAE8E1', '#B0BFFE', '#FF
     ax.spines['polar'].set_color('lightgrey')
 
     
-    for idx, (series_name, series) in enumerate(data.items()):
+    for idx, (series_name, series) in enumerate(df.items()):
         values = series.tolist()
         values = values + [values[0]]
 
@@ -53,3 +55,34 @@ def plot_radar_chart(data, title="", color_palette = ['#BAE8E1', '#B0BFFE', '#FF
     plt.xticks(theta, metrics + [metrics[0]], color='black', size=11.5, zorder=10)
 
     plt.legend(loc='upper right', bbox_to_anchor=(1.3, 1.1), fontsize=11.5)
+
+def plot_boxplot(df, x_colname, y_colname, title="", hue_colname=None, color_palette = 'viridis'):
+    '''
+    Plots a boxplot.
+
+    Args:
+        - df (pd.DataFrame): A dataframe containing the data to plot.
+        - x_colname (str): The column name for the x-axis.
+        - y_colname (str): The column name for the y-axis (metric column).
+        - title (str): The title of the plot.
+        - hue_colname (str, optional): The column name for hue grouping. Default is None.
+        - color_palette (list or str): The color palette to use for the plot.
+
+    Returns:
+        Plot figure.
+    
+    '''
+
+    # Determine hue order and corresponding colors 
+    hue_order = df[hue_colname].unique().tolist() if hue_colname else None
+    color_palette = sns.color_palette(color_palette, len(hue_order)) if hue_order else None
+    dataset_colormap = dict(zip(hue_order, color_palette)) if hue_order else None
+
+    plt.figure(figsize=(14, 6))
+    sns.boxplot(data=df, x=x_colname, y=y_colname, hue=hue_colname, palette=dataset_colormap, hue_order=hue_order)
+    plt.title(title, fontsize=20) if title != "" else plt.title(y_colname.upper() + " distribution for " + x_colname.capitalize() + " and " + hue_colname.capitalize(), fontsize=20)
+    plt.xlabel(x_colname.capitalize())
+    plt.ylabel(y_colname.capitalize())
+    plt.legend(title=hue_colname.capitalize(), bbox_to_anchor=(1.05, 1), loc="upper left") if hue_colname else None
+    plt.tight_layout()
+    plt.show()
