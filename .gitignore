@@ -4,6 +4,9 @@ data/
 runs/
 models/
 
+# Git Repositories
+nnUNet/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

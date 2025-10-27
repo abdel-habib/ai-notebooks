@@ -198,7 +198,7 @@ def get_system_info():
     info = {}
 
     # Basic system info
-    info['hostname'] = socket.gethostname()
+    # info['hostname'] = socket.gethostname()
     info['platform'] = platform.system()
     info['python_version'] = platform.python_version()
     info['torch_version'] = torch.__version__
@@ -209,7 +209,7 @@ def get_system_info():
     info['memory_gb'] = psutil.virtual_memory().total / (1024**3)
 
     # User and environment
-    info['user'] = os.environ.get('USER', 'unknown')
-    info['working_dir'] = os.getcwd()
+    # info['user'] = os.environ.get('USER', 'unknown')
+    # info['working_dir'] = os.getcwd()
 
     return info
