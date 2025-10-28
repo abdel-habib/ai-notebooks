@@ -1,6 +1,66 @@
 import numpy as np
 from typing import Union
 
+def haussdorf(gt: np.ndarray, pred: np.ndarray, voxelspacing: tuple):
+    """Compute relative absolute volume difference across classes. The corresponding labels should be
+    previously matched.
+    Args:
+        gt (np.ndarray): Grounth truth
+        pred (np.ndarray): Labels
+        voxelspacing (tuple): voxel_spacing
+    Returns:
+        list: Dice scores per tissue [CSF, GM, WM]
+    """
+    classes = np.unique(gt[gt != 0]).astype(int)
+    hd_values = np.zeros((len(classes)))
+    for i in classes:
+        bin_pred = np.where(pred == i, 1, 0)
+        bin_gt = np.where(gt == i, 1, 0)
+        #try:
+        hd_values[i-1] = hd(bin_pred, bin_gt, voxelspacing=voxelspacing)
+        #except:
+            #hd_values[i-1] = np.nan
+    return hd_values.tolist()
+
+def avd(gt: np.ndarray, pred: np.ndarray, voxelspacing: tuple):
+    """Compute relative absolute volume difference across classes. The corresponding labels should be
+    previously matched.
+    Args:
+        gt (np.ndarray): Grounth truth
+        pred (np.ndarray): Labels
+        voxelspacing (tuple): voxel_spacing
+    Returns:
+        list: Dice scores per tissue [CSF, GM, WM]
+    """
+    classes = np.unique(gt[gt != 0]).astype(int)
+    avd = np.zeros((len(classes)))
+    for i in classes:
+        bin_pred = np.where(pred == i, 1, 0)
+        bin_gt = np.where(gt == i, 1, 0)
+        vol_pred = np.count_nonzero(bin_pred)
+        vol_gt = np.count_nonzero(bin_gt)
+        unit_volume = voxelspacing[0] * voxelspacing[1] * voxelspacing[2]
+        avd[i-1] = np.abs(vol_pred - vol_gt) * unit_volume
+    return avd.tolist()
+
+def dice_score(gt: np.ndarray, pred: np.ndarray):
+    """Compute dice across classes. The corresponding labels should be
+    previously matched.
+    Args:
+        gt (np.ndarray): Grounth truth
+        pred (np.ndarray): Labels
+    Returns:
+        list: Dice scores per tissue [CSF, GM, WM]
+    """
+    classes = np.unique(gt[gt != 0])
+    dice = np.zeros((len(classes)))
+    for i in classes:
+        bin_pred = np.where(pred == i, 1, 0)
+        bin_gt = np.where(gt == i, 1, 0)
+        dice[i-1] = np.sum(bin_pred[bin_gt == 1]) * 2.0 / (np.sum(bin_pred) + np.sum(bin_gt))
+    
+    return dice.tolist()
+
 def cosine_distance(v1: np.ndarray, v2: np.ndarray) -> Union[float, np.ndarray]:
     '''
     Compute the cosine distance between two vectors.
