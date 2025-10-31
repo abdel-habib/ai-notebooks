@@ -4,12 +4,20 @@ from typing import Union
 def haussdorf(gt: np.ndarray, pred: np.ndarray, voxelspacing: tuple):
     """Compute relative absolute volume difference across classes. The corresponding labels should be
     previously matched.
-    Args:
-        gt (np.ndarray): Grounth truth
-        pred (np.ndarray): Labels
-        voxelspacing (tuple): voxel_spacing
-    Returns:
-        list: Dice scores per tissue [CSF, GM, WM]
+    
+    Parameters
+    ----------
+    gt : np.ndarray
+        Ground truth segmentation map.
+    pred : np.ndarray
+        Predicted segmentation map.
+    voxelspacing : tuple
+        Voxel spacing along each dimension (z, y, x).
+
+    Returns
+    -------
+    list
+        Haussdorf distance for each class.
     """
     classes = np.unique(gt[gt != 0]).astype(int)
     hd_values = np.zeros((len(classes)))
@@ -23,14 +31,24 @@ def haussdorf(gt: np.ndarray, pred: np.ndarray, voxelspacing: tuple):
     return hd_values.tolist()
 
 def avd(gt: np.ndarray, pred: np.ndarray, voxelspacing: tuple):
-    """Compute relative absolute volume difference across classes. The corresponding labels should be
+    """
+    Compute relative absolute volume difference across classes. The corresponding labels should be
     previously matched.
-    Args:
-        gt (np.ndarray): Grounth truth
-        pred (np.ndarray): Labels
-        voxelspacing (tuple): voxel_spacing
-    Returns:
-        list: Dice scores per tissue [CSF, GM, WM]
+    
+    Parameters
+    ----------
+    gt : np.ndarray
+        Ground truth segmentation map.
+    pred : np.ndarray
+        Predicted segmentation map.
+    voxelspacing : tuple
+        Voxel spacing along each dimension (z, y, x).
+
+    Returns
+    -------
+    list
+        Absolute volume difference for each class.
+
     """
     classes = np.unique(gt[gt != 0]).astype(int)
     avd = np.zeros((len(classes)))
@@ -44,14 +62,21 @@ def avd(gt: np.ndarray, pred: np.ndarray, voxelspacing: tuple):
     return avd.tolist()
 
 def dice_score(gt: np.ndarray, pred: np.ndarray):
-    """Compute dice across classes. The corresponding labels should be
-    previously matched.
-    Args:
-        gt (np.ndarray): Grounth truth
-        pred (np.ndarray): Labels
-    Returns:
-        list: Dice scores per tissue [CSF, GM, WM]
-    """
+    '''
+    Compute the Dice score between ground truth and predicted segmentation maps.
+
+    Parameters
+    ----------
+    gt : np.ndarray
+        Ground truth segmentation map.
+    pred : np.ndarray   
+        Predicted segmentation map.
+        
+    Returns
+    -------
+    list
+        Dice score for each class.
+    '''
     classes = np.unique(gt[gt != 0])
     dice = np.zeros((len(classes)))
     for i in classes:
